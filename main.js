@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         revealObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.12 });
 
   document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
