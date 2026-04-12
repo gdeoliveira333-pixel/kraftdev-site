@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const isOpen = navLinks.classList.toggle('open');
     hamburger.classList.toggle('open', isOpen);
     hamburger.setAttribute('aria-expanded', String(isOpen));
+    hamburger.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+    document.body.style.overflow = isOpen ? 'hidden' : '';
   });
 
   navLinks.querySelectorAll('a').forEach(link => {
@@ -39,6 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
       navLinks.classList.remove('open');
       hamburger.classList.remove('open');
       hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.setAttribute('aria-label', 'Abrir menu');
+      document.body.style.overflow = '';
     });
   });
 

@@ -205,10 +205,16 @@ section { position: relative; z-index: 1; }
     padding: 80px 24px 32px;
     gap: 20px;
     transform: translateY(-100%);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, visibility 0.3s ease;
     z-index: 99;
+    visibility: hidden;
+    pointer-events: none;
   }
-  .navbar__links.open { transform: translateY(0); }
+  .navbar__links.open {
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
   .navbar__links a { font-size: 18px; }
   .navbar__cta { display: none; }
   .navbar__hamburger { display: flex; }
