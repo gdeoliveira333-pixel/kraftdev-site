@@ -644,3 +644,108 @@ section { position: relative; z-index: 1; }
 @media (max-width: 768px) {
   .diff-grid { grid-template-columns: 1fr; gap: 24px; }
 }
+
+/* =====================
+   CTA FINAL
+   ===================== */
+.section-cta { text-align: center; }
+.cta-inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+.cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.5vw, 44px);
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.cta-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+  line-height: 1.7;
+}
+.cta-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.btn--large { font-size: 15px; padding: 14px 28px; }
+.cta-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* =====================
+   FOOTER
+   ===================== */
+.footer {
+  padding-bottom: 40px;
+}
+.footer__inner {
+  padding-top: 40px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 16px 32px;
+}
+.footer__logo {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--text-primary);
+  text-decoration: none;
+  grid-column: 1;
+  grid-row: 1;
+}
+.footer__links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  grid-column: 2;
+  grid-row: 1;
+}
+.footer__links a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer__links a:hover { color: var(--text-primary); }
+.footer__social {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  grid-column: 3;
+  grid-row: 1;
+}
+.footer__social a {
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.footer__social a:hover { color: var(--accent-green); }
+.footer__copy {
+  font-size: 12px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+@media (max-width: 768px) {
+  .footer__inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    justify-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+  .footer__logo, .footer__links, .footer__social, .footer__copy {
+    grid-column: 1; grid-row: auto;
+  }
+  .footer__links { justify-content: center; }
+}
