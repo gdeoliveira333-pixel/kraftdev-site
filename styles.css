@@ -556,3 +556,91 @@ section { position: relative; z-index: 1; }
     padding: 0;
   }
 }
+
+/* =====================
+   SEGMENT CARDS (Para Quem)
+   ===================== */
+.segment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.segment-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 14px;
+  padding: 28px;
+  transition: border-color 0.25s ease;
+}
+.segment-card:hover {
+  border-color: rgba(0, 229, 160, 0.35);
+}
+.segment-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-green);
+  background: rgba(0, 229, 160, 0.08);
+  border: 1px solid rgba(0, 229, 160, 0.2);
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+.segment-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.segment-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+@media (max-width: 1024px) {
+  .segment-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .segment-grid { grid-template-columns: 1fr; }
+}
+
+/* =====================
+   DIFERENCIAIS (2×2 grid)
+   ===================== */
+.diff-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px 48px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.diff-item {}
+.diff-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.diff-title::before {
+  content: '◆';
+  color: var(--accent-green);
+  font-size: 10px;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.diff-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 20px;
+}
+
+@media (max-width: 768px) {
+  .diff-grid { grid-template-columns: 1fr; gap: 24px; }
+}
