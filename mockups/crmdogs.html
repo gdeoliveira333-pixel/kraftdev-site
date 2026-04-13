@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0F1117; font-family: 'Inter', system-ui, sans-serif; font-size: 13px; color: #E2E8F0; min-height: 100vh; display: flex; }
+
+/* Sidebar */
+.sidebar { width: 220px; background: #0A0D14; border-right: 1px solid #1E2435; display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar__logo { padding: 20px 18px; border-bottom: 1px solid #1E2435; }
+.sidebar__logo-text { font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+.sidebar__logo-badge { width: 28px; height: 28px; background: #00C97D; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.sidebar__nav { padding: 12px 0; flex: 1; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 18px; color: #6B7A99; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; border-radius: 0; }
+.nav-item:hover { background: #141825; color: #CBD5E1; }
+.nav-item.active { background: rgba(0,201,125,0.08); color: #00C97D; border-right: 2px solid #00C97D; }
+.nav-item svg { flex-shrink: 0; }
+.nav-section { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #3D4F6E; padding: 16px 18px 6px; }
+
+/* Main */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar { background: #0A0D14; border-bottom: 1px solid #1E2435; padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.topbar__title { font-size: 15px; font-weight: 600; color: #E2E8F0; }
+.topbar__right { display: flex; align-items: center; gap: 12px; }
+.badge-alert { background: rgba(255,87,87,0.15); color: #FF5757; border: 1px solid rgba(255,87,87,0.3); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge-ok { background: rgba(0,201,125,0.12); color: #00C97D; border: 1px solid rgba(0,201,125,0.25); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.content { padding: 20px 24px; flex: 1; overflow-y: auto; }
+
+/* KPI Cards */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.kpi { background: #0F1420; border: 1px solid #1E2435; border-radius: 10px; padding: 16px; }
+.kpi__label { font-size: 10px; font-weight: 600; color: #6B7A99; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.kpi__value { font-size: 26px; font-weight: 700; color: #E2E8F0; margin-bottom: 2px; }
+.kpi__delta { font-size: 11px; }
+.kpi__delta.up { color: #00C97D; }
+.kpi__delta.down { color: #FF5757; }
+
+/* Pipeline Table */
+.section-label { font-size: 11px; font-weight: 700; color: #6B7A99; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+.pipeline { background: #0F1420; border: 1px solid #1E2435; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+.pipeline__header { display: grid; grid-template-columns: 1fr 120px 100px 90px 110px 90px; padding: 10px 16px; border-bottom: 1px solid #1E2435; }
+.pipeline__header span { font-size: 10px; font-weight: 700; color: #4A5568; text-transform: uppercase; letter-spacing: 0.06em; }
+.pipeline__row { display: grid; grid-template-columns: 1fr 120px 100px 90px 110px 90px; padding: 11px 16px; border-bottom: 1px solid #0D111A; align-items: center; transition: background 0.1s; }
+.pipeline__row:hover { background: #141825; }
+.pipeline__row:last-child { border-bottom: none; }
+.client-info { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.client-name { font-size: 12px; font-weight: 600; color: #CBD5E1; }
+.client-sub { font-size: 10px; color: #4A5568; margin-top: 1px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; }
+.tag.urgent { background: rgba(255,87,87,0.12); color: #FF5757; }
+.tag.warning { background: rgba(255,180,0,0.12); color: #FFB400; }
+.tag.ok { background: rgba(0,201,125,0.12); color: #00C97D; }
+.tag.ai { background: rgba(108,99,255,0.12); color: #8B83FF; }
+.col { font-size: 12px; color: #6B7A99; }
+.col.em { color: #CBD5E1; font-weight: 500; }
+.dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.dot.red { background: #FF5757; }
+.dot.yellow { background: #FFB400; }
+.dot.green { background: #00C97D; }
+
+/* AI Pitch Panel */
+.bottom-row { display: grid; grid-template-columns: 1fr 340px; gap: 14px; }
+.ai-panel { background: #0F1420; border: 1px solid rgba(108,99,255,0.25); border-radius: 10px; padding: 16px; }
+.ai-panel__header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.ai-badge { background: rgba(108,99,255,0.15); color: #8B83FF; border: 1px solid rgba(108,99,255,0.3); padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.ai-title { font-size: 13px; font-weight: 600; color: #CBD5E1; }
+.ai-pitch { background: #080C13; border: 1px solid #1E2435; border-radius: 8px; padding: 14px; font-size: 12px; color: #94A3B8; line-height: 1.65; margin-bottom: 12px; }
+.ai-pitch strong { color: #CBD5E1; }
+.ai-actions { display: flex; gap: 8px; }
+.btn-sm { padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; }
+.btn-primary { background: #8B83FF; color: #fff; }
+.btn-ghost { background: transparent; color: #6B7A99; border: 1px solid #1E2435; }
+
+/* Matilha mini */
+.matilha { background: #0F1420; border: 1px solid #1E2435; border-radius: 10px; padding: 16px; }
+.matilha__title { font-size: 11px; font-weight: 700; color: #6B7A99; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+.dog-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #0D111A; }
+.dog-row:last-child { border-bottom: none; }
+.dog-info { display: flex; align-items: center; gap: 8px; }
+.dog-emoji { font-size: 16px; }
+.dog-name { font-size: 12px; font-weight: 600; color: #CBD5E1; }
+.dog-breed { font-size: 10px; color: #4A5568; }
+.dog-phase { font-size: 10px; }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar__logo">
+    <div class="sidebar__logo-text">
+      <div class="sidebar__logo-badge">🐾</div>
+      CRMDogs
+    </div>
+  </div>
+  <div class="sidebar__nav">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Pipeline
+    </div>
+    <div class="nav-item">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Criadores
+    </div>
+    <div class="nav-item">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Alertas
+      <span style="margin-left:auto;background:#FF5757;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;">7</span>
+    </div>
+    <div class="nav-section">Analytics</div>
+    <div class="nav-item">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Relatórios
+    </div>
+    <div class="nav-item">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Copilot IA
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar__title">Pipeline de Vendas</div>
+    <div class="topbar__right">
+      <span class="badge-alert">⚠ 3 rupturas em 7 dias</span>
+      <span class="badge-ok">✓ 2 gestações detectadas</span>
+    </div>
+  </div>
+  <div class="content">
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi__label">Criadores Ativos</div>
+        <div class="kpi__value">148</div>
+        <div class="kpi__delta up">↑ +12 este mês</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Ruptura Crítica</div>
+        <div class="kpi__value" style="color:#FF5757">3</div>
+        <div class="kpi__delta down">Agir hoje</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Upsells Potenciais</div>
+        <div class="kpi__value" style="color:#FFB400">11</div>
+        <div class="kpi__delta up">↑ transição de fase</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Cães Cadastrados</div>
+        <div class="kpi__value">1.247</div>
+        <div class="kpi__delta up">↑ +38 este mês</div>
+      </div>
+    </div>
+
+    <div class="section-label">
+      <span>Prioridades do Dia</span>
+      <span style="color:#00C97D;font-size:11px;cursor:pointer">Ver todos →</span>
+    </div>
+    <div class="pipeline">
+      <div class="pipeline__header">
+        <span>Criador</span>
+        <span>Status</span>
+        <span>Fase Matilha</span>
+        <span>Dias Restantes</span>
+        <span>Pitch IA</span>
+        <span>Ação</span>
+      </div>
+      <div class="pipeline__row">
+        <div class="client-info">
+          <div class="avatar" style="background:rgba(255,87,87,0.15);color:#FF5757">SV</div>
+          <div><div class="client-name">Canil Silva Vencedor</div><div class="client-sub">Golden Retriever · 12 cães</div></div>
+        </div>
+        <div><span class="tag urgent"><span class="dot red"></span>Ruptura</span></div>
+        <div class="col em">Adulto → Sênior</div>
+        <div class="col" style="color:#FF5757;font-weight:700">3 dias</div>
+        <div><span class="tag ai">✦ Gerado</span></div>
+        <div><span class="tag ok" style="cursor:pointer">Ligar</span></div>
+      </div>
+      <div class="pipeline__row">
+        <div class="client-info">
+          <div class="avatar" style="background:rgba(255,180,0,0.15);color:#FFB400">CM</div>
+          <div><div class="client-name">Criador Monteiro</div><div class="client-sub">Labrador · 8 cães · 2 gestantes</div></div>
+        </div>
+        <div><span class="tag warning"><span class="dot yellow"></span>Gestação</span></div>
+        <div class="col em">Filhote esperado</div>
+        <div class="col" style="color:#FFB400;font-weight:700">45 dias</div>
+        <div><span class="tag ai">✦ Gerado</span></div>
+        <div><span class="tag ok" style="cursor:pointer">Ligar</span></div>
+      </div>
+      <div class="pipeline__row">
+        <div class="client-info">
+          <div class="avatar" style="background:rgba(0,201,125,0.15);color:#00C97D">KP</div>
+          <div><div class="client-name">Kennel Paws Premium</div><div class="client-sub">Border Collie · 22 cães</div></div>
+        </div>
+        <div><span class="tag ok"><span class="dot green"></span>Upsell</span></div>
+        <div class="col em">Filhote → Adulto</div>
+        <div class="col">18 dias</div>
+        <div><span class="tag ai">✦ Gerado</span></div>
+        <div><span class="tag ok" style="cursor:pointer">Ligar</span></div>
+      </div>
+      <div class="pipeline__row">
+        <div class="client-info">
+          <div class="avatar" style="background:rgba(139,131,255,0.15);color:#8B83FF">RA</div>
+          <div><div class="client-name">Rancho Alegre Canis</div><div class="client-sub">Shih-Tzu · 31 cães</div></div>
+        </div>
+        <div><span class="tag warning"><span class="dot yellow"></span>Atenção</span></div>
+        <div class="col em">Múltiplas fases</div>
+        <div class="col">12 dias</div>
+        <div><span class="tag ai">✦ Gerado</span></div>
+        <div><span class="tag ok" style="cursor:pointer">Ligar</span></div>
+      </div>
+    </div>
+
+    <div class="bottom-row">
+      <div class="ai-panel">
+        <div class="ai-panel__header">
+          <span class="ai-badge">✦ Copilot IA</span>
+          <span class="ai-title">Pitch gerado para Canil Silva Vencedor</span>
+        </div>
+        <div class="ai-pitch">
+          "Olá <strong>Silva</strong>, tudo bem? Passando para avisar que com base no histórico da sua matilha, alguns dos seus <strong>Golden Retrievers estão entrando na fase Sênior</strong> nas próximas semanas — isso significa que precisarão de ração com suporte articular e menor teor calórico. Já tenho o <strong>portfólio Sênior Premium</strong> separado pra você. Que tal a gente alinhar o próximo pedido antes que o estoque atual acabe? Consigo garantir entrega em 48h."
+        </div>
+        <div class="ai-actions">
+          <button class="btn-sm btn-primary">Copiar Pitch</button>
+          <button class="btn-sm btn-ghost">Regenerar</button>
+          <button class="btn-sm btn-ghost">Registrar ligação</button>
+        </div>
+      </div>
+      <div class="matilha">
+        <div class="matilha__title">Matilha · Silva Vencedor</div>
+        <div class="dog-row">
+          <div class="dog-info"><span class="dog-emoji">🐕</span><div><div class="dog-name">Thor</div><div class="dog-breed">Golden · Macho · 7 anos</div></div></div>
+          <span class="tag warning">Sênior em 12d</span>
+        </div>
+        <div class="dog-row">
+          <div class="dog-info"><span class="dog-emoji">🐕</span><div><div class="dog-name">Luna</div><div class="dog-breed">Golden · Fêmea · 6 anos</div></div></div>
+          <span class="tag ok">Adulto</span>
+        </div>
+        <div class="dog-row">
+          <div class="dog-info"><span class="dog-emoji">🐕</span><div><div class="dog-name">Zeus</div><div class="dog-breed">Golden · Macho · 7.5 anos</div></div></div>
+          <span class="tag urgent">Sênior</span>
+        </div>
+        <div class="dog-row">
+          <div class="dog-info"><span class="dog-emoji">🐶</span><div><div class="dog-name">Mel</div><div class="dog-breed">Golden · Fêmea · 1 ano</div></div></div>
+          <span class="tag" style="background:rgba(0,201,125,0.1);color:#00C97D">Filhote</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

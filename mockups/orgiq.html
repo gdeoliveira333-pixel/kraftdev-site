@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0B0F1A; font-family: system-ui, sans-serif; font-size: 13px; color: #E2E8F0; min-height: 100vh; display: flex; flex-direction: column; }
+
+/* Topbar */
+.topbar { background: #070B13; border-bottom: 1px solid #1A2035; padding: 0 20px; height: 52px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+.logo { font-size: 15px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+.logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, #6C63FF, #4F46E5); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+.period-select { background: #111827; border: 1px solid #1A2035; border-radius: 6px; padding: 5px 12px; color: #94A3B8; font-size: 11px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.copilot-btn { background: rgba(108,99,255,0.15); color: #8B83FF; border: 1px solid rgba(108,99,255,0.3); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #6C63FF, #00C97D); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+
+/* Layout */
+.layout { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 190px; background: #070B13; border-right: 1px solid #1A2035; padding: 12px 0; flex-shrink: 0; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 14px; font-size: 12px; color: #6B7A99; cursor: pointer; }
+.nav-item.active { color: #8B83FF; background: rgba(108,99,255,0.08); border-right: 2px solid #6C63FF; }
+.nav-section { font-size: 9px; font-weight: 700; color: #2D3748; text-transform: uppercase; letter-spacing: 0.1em; padding: 14px 14px 5px; }
+.main { flex: 1; overflow-y: auto; padding: 18px 20px; }
+
+/* Tab bar */
+.tabs { display: flex; gap: 2px; background: #0F1420; border: 1px solid #1A2035; border-radius: 8px; padding: 3px; margin-bottom: 18px; width: fit-content; }
+.tab { padding: 5px 14px; border-radius: 6px; font-size: 11px; font-weight: 600; color: #6B7A99; cursor: pointer; }
+.tab.active { background: #6C63FF; color: #fff; }
+
+/* KPIs */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+.kpi { background: #0F1420; border: 1px solid #1A2035; border-radius: 10px; padding: 14px; }
+.kpi__label { font-size: 10px; font-weight: 600; color: #4B5563; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+.kpi__value { font-size: 24px; font-weight: 700; margin-bottom: 2px; }
+.kpi__delta { font-size: 10px; }
+.up { color: #00C97D; }
+.down { color: #FF5757; }
+.neutral { color: #FFB400; }
+
+/* Charts row */
+.charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.chart-card { background: #0F1420; border: 1px solid #1A2035; border-radius: 10px; padding: 14px; }
+.chart-title { font-size: 11px; font-weight: 700; color: #6B7A99; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px; }
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 70px; }
+.bar { flex: 1; border-radius: 4px 4px 0 0; min-width: 18px; }
+.bar-labels { display: flex; gap: 6px; margin-top: 6px; }
+.bar-labels span { flex: 1; font-size: 9px; color: #4B5563; text-align: center; }
+.donut-wrap { display: flex; align-items: center; gap: 14px; }
+.donut { width: 70px; height: 70px; border-radius: 50%; background: conic-gradient(#6C63FF 0deg 130deg, #00C97D 130deg 220deg, #FF5757 220deg 280deg, #FFB400 280deg 360deg); flex-shrink: 0; position: relative; }
+.donut::after { content: ''; position: absolute; inset: 18px; background: #0F1420; border-radius: 50%; }
+.donut-legend { display: flex; flex-direction: column; gap: 5px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #94A3B8; }
+.legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+/* Indicators table */
+.ind-table { background: #0F1420; border: 1px solid #1A2035; border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+.ind-header { display: grid; grid-template-columns: 1fr 90px 90px 90px 100px; padding: 9px 14px; border-bottom: 1px solid #1A2035; }
+.ind-header span { font-size: 10px; font-weight: 700; color: #4B5563; text-transform: uppercase; letter-spacing: 0.06em; }
+.ind-row { display: grid; grid-template-columns: 1fr 90px 90px 90px 100px; padding: 10px 14px; border-bottom: 1px solid #0D111A; align-items: center; }
+.ind-row:last-child { border-bottom: none; }
+.ind-name { font-size: 12px; font-weight: 500; color: #CBD5E1; }
+.ind-sub { font-size: 10px; color: #4B5563; margin-top: 1px; }
+.ind-val { font-size: 13px; font-weight: 700; }
+.progress-bar { height: 4px; background: #1A2035; border-radius: 4px; margin-top: 4px; }
+.progress-fill { height: 100%; border-radius: 4px; }
+.tag-sm { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+.tag-green { background: rgba(0,201,125,0.1); color: #00C97D; }
+.tag-red { background: rgba(255,87,87,0.1); color: #FF5757; }
+.tag-yellow { background: rgba(255,180,0,0.1); color: #FFB400; }
+.tag-blue { background: rgba(108,99,255,0.1); color: #8B83FF; }
+
+/* Copilot panel */
+.copilot { background: rgba(108,99,255,0.05); border: 1px solid rgba(108,99,255,0.2); border-radius: 10px; padding: 14px; }
+.copilot-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.copilot-badge { background: rgba(108,99,255,0.15); color: #8B83FF; border: 1px solid rgba(108,99,255,0.3); padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 700; }
+.copilot-msg { font-size: 12px; color: #94A3B8; line-height: 1.6; margin-bottom: 10px; }
+.copilot-msg strong { color: #CBD5E1; }
+.copilot-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { background: #111827; border: 1px solid #1A2035; color: #6B7A99; padding: 4px 10px; border-radius: 20px; font-size: 10px; cursor: pointer; }
+.chip:hover { border-color: rgba(108,99,255,0.4); color: #8B83FF; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo"><div class="logo-icon">📊</div> OrgIQ</div>
+  <div class="period-select">📅 Abril 2026 ▾</div>
+  <div style="font-size:11px;color:#4B5563">Haribo Brasil · BP Analytics</div>
+  <div class="topbar-right">
+    <div class="copilot-btn">✦ Copilot IA</div>
+    <div class="avatar">SI</div>
+  </div>
+</div>
+<div class="layout">
+  <div class="sidebar">
+    <div class="nav-section">Dashboard</div>
+    <div class="nav-item active">📊 Indicadores</div>
+    <div class="nav-item">⚖️ Jurídico</div>
+    <div class="nav-item">👥 Recrutamento</div>
+    <div class="nav-item">📤 Rescisões</div>
+    <div class="nav-section">Histórico</div>
+    <div class="nav-item">📁 Upload CSV</div>
+    <div class="nav-item">📈 Evolução</div>
+    <div class="nav-item">🎯 Metas</div>
+    <div class="nav-section">Relatórios</div>
+    <div class="nav-item">⬇️ Exportar</div>
+    <div class="nav-item">⚙️ Configurar</div>
+  </div>
+  <div class="main">
+    <div class="tabs">
+      <div class="tab active">Indicadores</div>
+      <div class="tab">Jurídico</div>
+      <div class="tab">Recrutamento</div>
+      <div class="tab">Rescisões</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Headcount Total</div>
+        <div class="kpi__value">1.284</div>
+        <div class="kpi__delta up">↑ +18 vs Mar</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Turnover (12m)</div>
+        <div class="kpi__value" style="color:#FFB400">14,2%</div>
+        <div class="kpi__delta neutral">⚠ Meta: 12%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Absenteísmo</div>
+        <div class="kpi__value" style="color:#00C97D">2,1%</div>
+        <div class="kpi__delta up">↓ -0.4pp vs Mar</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Custo RH / Rec.</div>
+        <div class="kpi__value">38,4%</div>
+        <div class="kpi__delta up">↓ Meta atingida</div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Turnover por área</div>
+        <div class="bar-chart">
+          <div class="bar" style="height:80%;background:#FF5757;opacity:0.8"></div>
+          <div class="bar" style="height:55%;background:#FFB400;opacity:0.8"></div>
+          <div class="bar" style="height:35%;background:#00C97D;opacity:0.8"></div>
+          <div class="bar" style="height:45%;background:#6C63FF;opacity:0.8"></div>
+          <div class="bar" style="height:25%;background:#00C97D;opacity:0.8"></div>
+        </div>
+        <div class="bar-labels"><span>Vendas</span><span>Ops</span><span>TI</span><span>Mktg</span><span>RH</span></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Distribuição por nível</div>
+        <div class="donut-wrap">
+          <div class="donut"></div>
+          <div class="donut-legend">
+            <div class="legend-item"><span class="legend-dot" style="background:#6C63FF"></span>Gerência 36%</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#00C97D"></span>Sênior 25%</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#FF5757"></span>Pleno 17%</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#FFB400"></span>Júnior 22%</div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Recrutamento Abr</div>
+        <div class="bar-chart">
+          <div class="bar" style="height:90%;background:#6C63FF;opacity:0.8"></div>
+          <div class="bar" style="height:70%;background:#00C97D;opacity:0.8"></div>
+          <div class="bar" style="height:50%;background:#FFB400;opacity:0.8"></div>
+          <div class="bar" style="height:80%;background:#6C63FF;opacity:0.5"></div>
+        </div>
+        <div class="bar-labels"><span>Michael P.</span><span>LinkedIn</span><span>Interno</span><span>Randstad</span></div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:#4B5563;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Indicadores Qualitativos · Abril 2026</div>
+    <div class="ind-table">
+      <div class="ind-header">
+        <span>Indicador</span><span>Valor</span><span>Meta</span><span>vs Meta</span><span>Status</span>
+      </div>
+      <div class="ind-row">
+        <div><div class="ind-name">Satisfação dos funcionários (eNPS)</div><div class="ind-sub">Pesquisa trimestral</div></div>
+        <div class="ind-val" style="color:#00C97D">42</div>
+        <div style="font-size:12px;color:#6B7A99">≥ 40</div>
+        <div style="font-size:12px;color:#00C97D">+5%</div>
+        <div><span class="tag-sm tag-green">✓ Atingido</span></div>
+      </div>
+      <div class="ind-row">
+        <div><div class="ind-name">Tempo médio de contratação</div><div class="ind-sub">Da abertura ao aceite</div></div>
+        <div class="ind-val" style="color:#FFB400">28 dias</div>
+        <div style="font-size:12px;color:#6B7A99">≤ 25 dias</div>
+        <div style="font-size:12px;color:#FF5757">+12%</div>
+        <div><span class="tag-sm tag-yellow">⚠ Atenção</span></div>
+      </div>
+      <div class="ind-row">
+        <div><div class="ind-name">Assertividade de contratação 90d</div><div class="ind-sub">Retenção após 90 dias</div></div>
+        <div class="ind-val" style="color:#00C97D">87%</div>
+        <div style="font-size:12px;color:#6B7A99">≥ 85%</div>
+        <div style="font-size:12px;color:#00C97D">+2pp</div>
+        <div><span class="tag-sm tag-green">✓ Atingido</span></div>
+      </div>
+      <div class="ind-row">
+        <div><div class="ind-name">Custo provisionado jurídico</div><div class="ind-sub">Processos trabalhistas ativos</div></div>
+        <div class="ind-val" style="color:#FF5757">R$ 1,4M</div>
+        <div style="font-size:12px;color:#6B7A99">≤ R$ 1M</div>
+        <div style="font-size:12px;color:#FF5757">+40%</div>
+        <div><span class="tag-sm tag-red">✗ Crítico</span></div>
+      </div>
+    </div>
+
+    <div class="copilot">
+      <div class="copilot-header">
+        <span class="copilot-badge">✦ Copilot IA</span>
+        <span style="font-size:13px;font-weight:600;color:#CBD5E1">Análise do mês · Abril 2026</span>
+      </div>
+      <div class="copilot-msg">
+        O <strong>custo jurídico provisionado</strong> está <strong>40% acima da meta</strong> — principal driver: área de Vendas com 8 processos ativos (52% do total). O <strong>turnover de Vendas</strong> segue elevado em 24%, correlacionado. Recomendo revisar política de comissões e onboarding. <strong>Ponto positivo:</strong> assertividade de contratação bateu meta pelo 3º mês consecutivo — o canal LinkedIn segue como mais eficiente com R$ 2.400/contratação.
+      </div>
+      <div class="copilot-chips">
+        <div class="chip">Detalhar jurídico</div>
+        <div class="chip">Comparar com Mar</div>
+        <div class="chip">Gerar relatório PDF</div>
+        <div class="chip">Projetar próx. trimestre</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
